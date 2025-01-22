@@ -1463,7 +1463,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		await this.storeSecret("unboundApiKey", unboundApiKey)
 		await this.updateGlobalState("unboundModelId", unboundModelId)
 		if (this.cline) {
-			this.cline.api = buildApiHandler(apiConfiguration)
+			const newApi = buildApiHandler(apiConfiguration)
+			this.cline.api = newApi
+			this.cline.apiProvider = apiConfiguration.apiProvider ?? "anthropic"
 		}
 	}
 
@@ -1594,7 +1596,9 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		await this.storeSecret("openRouterApiKey", apiKey)
 		await this.postStateToWebview()
 		if (this.cline) {
-			this.cline.api = buildApiHandler({ apiProvider: openrouter, openRouterApiKey: apiKey })
+			const newApi = buildApiHandler({ apiProvider: openrouter, openRouterApiKey: apiKey })
+			this.cline.api = newApi
+			this.cline.apiProvider = openrouter
 		}
 		// await this.postMessageToWebview({ type: "action", action: "settingsButtonClicked" }) // bad ux if user is on welcome
 	}
@@ -1626,10 +1630,12 @@ export class ClineProvider implements vscode.WebviewViewProvider {
 		await this.storeSecret("glamaApiKey", apiKey)
 		await this.postStateToWebview()
 		if (this.cline) {
-			this.cline.api = buildApiHandler({
+			const newApi = buildApiHandler({
 				apiProvider: glama,
 				glamaApiKey: apiKey,
 			})
+			this.cline.api = newApi
+			this.cline.apiProvider = glama
 		}
 		// await this.postMessageToWebview({ type: "action", action: "settingsButtonClicked" }) // bad ux if user is on welcome
 	}
